@@ -1,0 +1,369 @@
+<%= form_with model: [:admin, question],
+              class: "question-admin-form" do |f| %>
+
+  <% if question.errors.any? %>
+
+    <div class="form-errors">
+
+      <strong>
+        Não foi possível salvar a questão.
+      </strong>
+
+      <ul>
+        <% question.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+
+    </div>
+
+  <% end %>
+
+
+  <!-- IDENTIFICAÇÃO -->
+
+  <section class="form-section card">
+
+    <div class="form-section-header">
+      <div>
+        <h2>Identificação</h2>
+
+        <p>
+          Informe a prova, disciplina e posição da questão.
+        </p>
+      </div>
+    </div>
+
+
+    <div class="form-grid form-grid-3">
+
+      <div class="form-group">
+
+        <%= f.label :exam_id, "Prova" %>
+
+        <%= f.collection_select(
+              :exam_id,
+              @exams,
+              :id,
+              :name,
+              { prompt: "Selecione uma prova" },
+              { class: "form-control" }
+            ) %>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <%= f.label :subject_id, "Disciplina" %>
+
+        <%= f.collection_select(
+              :subject_id,
+              @subjects,
+              :id,
+              :name,
+              { prompt: "Selecione uma disciplina" },
+              { class: "form-control" }
+            ) %>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <%= f.label :number, "Número na prova" %>
+
+        <%= f.number_field(
+              :number,
+              min: 1,
+              class: "form-control",
+              placeholder: "Ex.: 42"
+            ) %>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- CONTEÚDO -->
+
+  <section class="form-section card">
+
+    <div class="form-section-header">
+      <div>
+        <h2>Conteúdo</h2>
+
+        <p>
+          Insira o enunciado e classifique os assuntos abordados.
+        </p>
+      </div>
+    </div>
+
+
+    <div class="form-group">
+
+      <%= f.label :statement, "Enunciado" %>
+
+      <%= f.text_area(
+            :statement,
+            rows: 8,
+            class: "form-control form-textarea-large",
+            placeholder: "Digite o enunciado completo da questão..."
+          ) %>
+
+    </div>
+
+
+    <div class="form-group">
+
+      <%= f.label :topic_ids, "Assuntos" %>
+
+      <%= f.collection_select(
+            :topic_ids,
+            @topics,
+            :id,
+            :name,
+            {},
+            {
+              multiple: true,
+              size: 7,
+              class: "form-control form-multi-select"
+            }
+          ) %>
+
+      <span class="form-help">
+        Você pode selecionar mais de um assunto.
+        Use Ctrl para selecionar vários itens.
+      </span>
+
+    </div>
+
+  </section>
+
+
+  <!-- CLASSIFICAÇÃO -->
+
+  <section class="form-section card">
+
+    <div class="form-section-header">
+      <div>
+        <h2>Classificação</h2>
+
+        <p>
+          Defina o formato, dificuldade e situação da questão.
+        </p>
+      </div>
+    </div>
+
+
+    <div class="form-grid form-grid-3">
+
+      <div class="form-group">
+
+        <%= f.label :modality, "Modalidade" %>
+
+        <%= f.select(
+              :modality,
+              [
+                ["Múltipla escolha", "multiple_choice"],
+                ["Certo / Errado", "true_false"]
+              ],
+              {},
+              { class: "form-control" }
+            ) %>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <%= f.label :difficulty, "Dificuldade" %>
+
+        <%= f.select(
+              :difficulty,
+              [
+                ["Não definida", "not_defined"],
+                ["Fácil", "easy"],
+                ["Média", "medium"],
+                ["Difícil", "hard"]
+              ],
+              {},
+              { class: "form-control" }
+            ) %>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <%= f.label :status, "Status" %>
+
+        <%= f.select(
+              :status,
+              [
+                ["Rascunho", "draft"],
+                ["Em revisão", "pending_review"],
+                ["Publicada", "published"],
+                ["Arquivada", "archived"]
+              ],
+              {},
+              { class: "form-control" }
+            ) %>
+
+      </div>
+
+    </div>
+
+
+    <div class="form-checks">
+
+      <label class="form-check-card">
+
+        <%= f.check_box :annulled %>
+
+        <span>
+          <strong>Questão anulada</strong>
+
+          <small>
+            Identifica questões oficialmente anuladas.
+          </small>
+        </span>
+
+      </label>
+
+
+      <label class="form-check-card">
+
+        <%= f.check_box :outdated %>
+
+        <span>
+          <strong>Questão desatualizada</strong>
+
+          <small>
+            Indica conteúdo que não deve ser priorizado nos estudos.
+          </small>
+        </span>
+
+      </label>
+
+    </div>
+
+  </section>
+
+
+  <!-- ALTERNATIVAS -->
+
+  <section class="form-section card">
+
+    <div class="form-section-header">
+      <div>
+        <h2>Alternativas</h2>
+
+        <p>
+          Preencha as alternativas quando a questão for de múltipla escolha.
+        </p>
+      </div>
+    </div>
+
+
+    <div class="alternatives-editor">
+
+      <%= f.fields_for :question_alternatives do |alternative_fields| %>
+
+        <div class="alternative-editor-row">
+
+          <div class="alternative-letter">
+            <%= alternative_fields.object.letter %>
+          </div>
+
+          <%= alternative_fields.hidden_field :letter %>
+
+          <%= alternative_fields.text_area(
+                :text,
+                rows: 2,
+                class: "form-control alternative-text",
+                placeholder: "Texto da alternativa #{alternative_fields.object.letter}"
+              ) %>
+
+        </div>
+
+      <% end %>
+
+    </div>
+
+  </section>
+
+
+  <!-- GABARITO -->
+
+  <section class="form-section card">
+
+    <div class="form-section-header">
+      <div>
+        <h2>Gabarito</h2>
+
+        <p>
+          Informe a resposta considerada correta.
+        </p>
+      </div>
+    </div>
+
+
+    <div class="answer-grid">
+
+      <div class="form-group">
+
+        <%= f.label :correct_answer, "Resposta correta" %>
+
+        <%= f.select(
+              :correct_answer,
+              [
+                ["A", "A"],
+                ["B", "B"],
+                ["C", "C"],
+                ["D", "D"],
+                ["E", "E"]
+              ],
+              { include_blank: "Selecione" },
+              { class: "form-control" }
+            ) %>
+
+      </div>
+
+
+      <div class="answer-help">
+
+        <strong>Questões Certo / Errado</strong>
+
+        <p>
+          Utilize <strong>C</strong> para Certo e
+          <strong>E</strong> para Errado.
+        </p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ACTIONS -->
+
+  <div class="form-actions">
+
+    <%= link_to "Cancelar",
+                admin_questions_path,
+                class: "btn btn-secondary" %>
+
+    <%= f.submit(
+          question.persisted? ?
+            "Salvar alterações" :
+            "Criar questão",
+          class: "btn btn-primary"
+        ) %>
+
+  </div>
+
+<% end %>

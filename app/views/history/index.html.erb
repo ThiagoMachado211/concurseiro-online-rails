@@ -1,0 +1,297 @@
+<section class="performance-page">
+
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Meu Desempenho</h1>
+
+      <p class="page-description">
+        Acompanhe seus resultados e sua evolução nas questões resolvidas.
+      </p>
+    </div>
+  </header>
+
+
+  <!-- RESUMO -->
+  <section class="performance-summary">
+
+    <div class="metric-card card">
+      <span class="metric-label">Questões respondidas</span>
+
+      <strong class="metric-value">
+        <%= @unique_questions %>
+      </strong>
+
+      <span class="metric-description">
+        questões diferentes
+      </span>
+    </div>
+
+
+    <div class="metric-card card">
+      <span class="metric-label">Tentativas</span>
+
+      <strong class="metric-value">
+        <%= @total_attempts %>
+      </strong>
+
+      <span class="metric-description">
+        respostas enviadas
+      </span>
+    </div>
+
+
+    <div class="metric-card metric-card-success card">
+      <span class="metric-label">Acertos</span>
+
+      <strong class="metric-value">
+        <%= @correct_attempts %>
+      </strong>
+
+      <span class="metric-description">
+        respostas corretas
+      </span>
+    </div>
+
+
+    <div class="metric-card metric-card-error card">
+      <span class="metric-label">Erros</span>
+
+      <strong class="metric-value">
+        <%= @incorrect_attempts %>
+      </strong>
+
+      <span class="metric-description">
+        respostas incorretas
+      </span>
+    </div>
+
+
+    <div class="metric-card metric-card-highlight card">
+      <span class="metric-label">Aproveitamento</span>
+
+      <strong class="metric-value">
+        <%= number_with_precision(
+              @accuracy,
+              precision: 1,
+              separator: ","
+            ) %>%
+      </strong>
+
+      <span class="metric-description">
+        desempenho geral
+      </span>
+    </div>
+
+  </section>
+
+
+  <!-- DESEMPENHO POR DISCIPLINA -->
+  <section class="dashboard-section">
+
+    <div class="section-heading">
+      <div>
+        <h2>Desempenho por disciplina</h2>
+
+        <p>
+          Compare seus resultados entre as disciplinas praticadas.
+        </p>
+      </div>
+    </div>
+
+
+    <div class="card performance-subjects">
+
+      <% if @performance_by_subject.any? %>
+
+        <% @performance_by_subject.each do |name, total, correct| %>
+
+          <% total = total.to_i %>
+          <% correct = correct.to_i %>
+          <% incorrect = total - correct %>
+
+          <% accuracy =
+               total.positive? ?
+                 (correct.to_f / total * 100) :
+                 0 %>
+
+
+          <div class="subject-performance">
+
+            <div class="subject-performance-header">
+
+              <div>
+                <strong class="subject-name">
+                  <%= name %>
+                </strong>
+
+                <span class="subject-stats">
+                  <%= total %>
+                  <%= total == 1 ? "tentativa" : "tentativas" %>
+                  •
+                  <%= correct %> acertos
+                  •
+                  <%= incorrect %> erros
+                </span>
+              </div>
+
+
+              <strong class="subject-accuracy">
+                <%= number_with_precision(
+                      accuracy,
+                      precision: 1,
+                      separator: ","
+                    ) %>%
+              </strong>
+
+            </div>
+
+
+            <div class="performance-bar">
+
+              <div
+                class="performance-bar-fill"
+                style="width: <%= [[accuracy, 0].max, 100].min %>%;">
+              </div>
+
+            </div>
+
+          </div>
+
+        <% end %>
+
+
+      <% else %>
+
+        <div class="empty-state">
+
+          <div class="empty-state-icon">◎</div>
+
+          <h3>Nenhum resultado ainda</h3>
+
+          <p>
+            Resolva algumas questões para começar a acompanhar
+            seu desempenho por disciplina.
+          </p>
+
+          <%= link_to "Resolver questões",
+                      questions_path,
+                      class: "btn btn-primary" %>
+
+        </div>
+
+      <% end %>
+
+    </div>
+
+  </section>
+
+
+  <!-- ÚLTIMAS TENTATIVAS -->
+  <section class="dashboard-section">
+
+    <div class="section-heading">
+      <div>
+        <h2>Últimas tentativas</h2>
+
+        <p>
+          Veja suas respostas mais recentes.
+        </p>
+      </div>
+    </div>
+
+
+    <div class="card attempts-card">
+
+      <% if @attempts.any? %>
+
+        <div class="attempts-list">
+
+          <% @attempts.limit(20).each do |attempt| %>
+
+            <div class="attempt-row">
+
+              <div class="attempt-question">
+
+                <span class="attempt-question-id">
+                  <%= attempt.question.public_id %>
+                </span>
+
+                <div class="attempt-question-info">
+
+                  <strong>
+                    <%= attempt.question.subject.name %>
+                  </strong>
+
+                  <span>
+                    <%= attempt.question.exam.exam_board.acronym.presence ||
+                        attempt.question.exam.exam_board.name %>
+
+                    •
+
+                    <%= attempt.question.exam.year %>
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              <div class="attempt-answer">
+
+                <span class="attempt-answer-label">
+                  Resposta
+                </span>
+
+                <strong>
+                  <%= attempt.answer %>
+                </strong>
+
+              </div>
+
+
+              <% if attempt.correct? %>
+
+                <span class="attempt-status attempt-status-success">
+                  ✓ Correta
+                </span>
+
+              <% else %>
+
+                <span class="attempt-status attempt-status-error">
+                  ✕ Incorreta
+                </span>
+
+              <% end %>
+
+            </div>
+
+          <% end %>
+
+        </div>
+
+
+      <% else %>
+
+        <div class="empty-state">
+
+          <div class="empty-state-icon">◎</div>
+
+          <h3>Nenhuma tentativa registrada</h3>
+
+          <p>
+            Suas respostas mais recentes aparecerão aqui.
+          </p>
+
+          <%= link_to "Resolver questões",
+                      questions_path,
+                      class: "btn btn-primary" %>
+
+        </div>
+
+      <% end %>
+
+    </div>
+
+  </section>
+
+</section>

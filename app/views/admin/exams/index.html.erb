@@ -1,0 +1,65 @@
+<h1>Provas</h1>
+
+<p>
+  <%= link_to "Nova prova", new_admin_exam_path %>
+</p>
+
+<p>
+  <strong><%= @exams.count %></strong>
+  provas cadastradas.
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Prova</th>
+      <th>Ano</th>
+      <th>Banca</th>
+      <th>Instituição</th>
+      <th>Cargo</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @exams.each do |exam| %>
+      <tr>
+        <td><%= exam.name %></td>
+        <td><%= exam.year %></td>
+
+        <td>
+          <%= exam.exam_board&.acronym.presence ||
+              exam.exam_board&.name %>
+        </td>
+
+        <td>
+          <%= exam.institution&.acronym.presence ||
+              exam.institution&.name %>
+        </td>
+
+        <td>
+          <%= exam.position&.name %>
+        </td>
+
+        <td>
+          <%= link_to "Editar",
+                      edit_admin_exam_path(exam) %>
+
+          <%= button_to "Excluir",
+                        admin_exam_path(exam),
+                        method: :delete,
+                        form: {
+                          data: {
+                            turbo_confirm: "Tem certeza?"
+                          }
+                        } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p>
+  <%= link_to "Voltar para Administração",
+              admin_root_path %>
+</p>

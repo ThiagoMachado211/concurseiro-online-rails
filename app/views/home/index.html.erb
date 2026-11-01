@@ -1,0 +1,29 @@
+<h1>Concurseiro Online</h1>
+
+<% if user_signed_in? %>
+  <p>
+    Olá, <strong><%= current_user.name %></strong>!
+  </p>
+
+  <p>
+    Perfil:
+    <strong>
+      <%= current_user.admin? ? "Administrador" : "Aluno" %>
+    </strong>
+  </p>
+
+  <%= button_to "Sair",
+        destroy_user_session_path,
+        method: :delete %>
+
+<% else %>
+
+  <p>Plataforma de questões para concursos.</p>
+
+  <%= link_to "Entrar", new_user_session_path %>
+
+  <br><br>
+
+  <%= link_to "Criar conta", new_user_registration_path %>
+
+<% end %>

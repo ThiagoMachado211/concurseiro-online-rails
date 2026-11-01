@@ -1,0 +1,451 @@
+<section class="questions-page">
+
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Questões</h1>
+      <p class="page-description">
+        Encontre e resolva questões de concursos anteriores.
+      </p>
+    </div>
+  </header>
+
+
+  <!-- FILTROS -->
+  <section class="filter-card card">
+
+    <%= form_with url: questions_path,
+                  method: :get,
+                  class: "questions-filter" do |f| %>
+
+      <div class="filter-search">
+        <label class="filter-label">Palavra-chave</label>
+
+        <%= f.search_field :keyword,
+              value: params[:keyword],
+              placeholder: "Pesquise no enunciado da questão",
+              class: "filter-control" %>
+      </div>
+
+
+      <div class="filter-grid">
+
+        <div class="filter-field">
+          <label class="filter-label">Disciplina</label>
+
+          <%= f.collection_select :subject_id,
+                @subjects, :id, :name,
+                {
+                  include_blank: "Todas as disciplinas",
+                  selected: params[:subject_id]
+                },
+                class: "filter-control" %>
+        </div>
+
+
+        <div class="filter-field">
+          <label class="filter-label">Assunto</label>
+
+          <%= f.collection_select :topic_id,
+                @topics, :id, :name,
+                {
+                  include_blank: "Todos os assuntos",
+                  selected: params[:topic_id]
+                },
+                class: "filter-control" %>
+        </div>
+
+
+        <div class="filter-field">
+          <label class="filter-label">Banca</label>
+
+          <%= f.collection_select :exam_board_id,
+                @exam_boards, :id, :name,
+                {
+                  include_blank: "Todas as bancas",
+                  selected: params[:exam_board_id]
+                },
+                class: "filter-control" %>
+        </div>
+
+
+        <div class="filter-field">
+          <label class="filter-label">Instituição</label>
+
+          <%= f.collection_select :institution_id,
+                @institutions, :id, :name,
+                {
+                  include_blank: "Todas as instituições",
+                  selected: params[:institution_id]
+                },
+                class: "filter-control" %>
+        </div>
+
+
+        <div class="filter-field">
+          <label class="filter-label">Ano</label>
+
+          <%= f.select :year,
+                @years,
+                {
+                  include_blank: "Todos os anos",
+                  selected: params[:year]
+                },
+                class: "filter-control" %>
+        </div>
+
+
+        <div class="filter-field">
+          <label class="filter-label">Cargo</label>
+
+          <%= f.collection_select :position_id,
+                @positions, :id, :name,
+                {
+                  include_blank: "Todos os cargos",
+                  selected: params[:position_id]
+                },
+                class: "filter-control" %>
+        </div>
+
+
+        <div class="filter-field">
+          <label class="filter-label">Nível</label>
+
+          <%= f.select :level,
+                [
+                  ["Fundamental", "elementary"],
+                  ["Médio", "high_school"],
+                  ["Técnico", "technical"],
+                  ["Superior", "higher_education"]
+                ],
+                {
+                  include_blank: "Todos os níveis",
+                  selected: params[:level]
+                },
+                class: "filter-control" %>
+        </div>
+
+
+        <div class="filter-field">
+          <label class="filter-label">Modalidade</label>
+
+          <%= f.select :modality,
+                [
+                  ["Múltipla escolha", "multiple_choice"],
+                  ["Certo / Errado", "true_false"]
+                ],
+                {
+                  include_blank: "Todas",
+                  selected: params[:modality]
+                },
+                class: "filter-control" %>
+        </div>
+
+
+        <div class="filter-field">
+          <label class="filter-label">Dificuldade</label>
+
+          <%= f.select :difficulty,
+                [
+                  ["Fácil", "easy"],
+                  ["Média", "medium"],
+                  ["Difícil", "hard"]
+                ],
+                {
+                  include_blank: "Todas",
+                  selected: params[:difficulty]
+                },
+                class: "filter-control" %>
+        </div>
+
+      </div>
+
+
+      <div class="filter-footer">
+
+        <div class="filter-options">
+
+          <label class="checkbox-option">
+            <%= f.check_box :exclude_annulled,
+                  {
+                    checked: params[:exclude_annulled] == "1"
+                  },
+                  "1", "0" %>
+
+            <span>Excluir anuladas</span>
+          </label>
+
+
+          <label class="checkbox-option">
+            <%= f.check_box :exclude_outdated,
+                  {
+                    checked: params[:exclude_outdated] == "1"
+                  },
+                  "1", "0" %>
+
+            <span>Excluir desatualizadas</span>
+          </label>
+
+        </div>
+
+
+        <div class="filter-actions">
+
+          <%= link_to "Limpar filtros",
+                      questions_path,
+                      class: "btn btn-secondary" %>
+
+          <%= f.submit "Filtrar",
+                       class: "btn btn-primary" %>
+
+        </div>
+
+      </div>
+
+    <% end %>
+
+  </section>
+
+
+  <!-- RESULTADOS -->
+  <div class="results-header">
+
+    <p class="results-count">
+      <strong><%= @questions.size %></strong>
+      <%= @questions.size == 1 ? "questão encontrada" : "questões encontradas" %>
+    </p>
+
+  </div>
+
+
+  <!-- QUESTÕES -->
+  <div class="questions-list">
+
+    <% @questions.each do |question| %>
+
+      <article class="question-card card">
+
+        <header class="question-card-header">
+
+          <div class="question-identification">
+
+            <span class="question-id">
+              <%= question.public_id %>
+            </span>
+
+            <span class="question-subject">
+              <%= question.subject.name %>
+            </span>
+
+          </div>
+
+
+          <div class="question-exam-meta">
+
+            <span>
+              <%= question.exam.exam_board.acronym.presence ||
+                  question.exam.exam_board.name %>
+            </span>
+
+            <span class="meta-separator">•</span>
+
+            <span>
+              <%= question.exam.institution.acronym.presence ||
+                  question.exam.institution.name %>
+            </span>
+
+            <span class="meta-separator">•</span>
+
+            <span>
+              <%= question.exam.year %>
+            </span>
+
+          </div>
+
+        </header>
+
+
+        <% if question.topics.any? %>
+
+          <div class="question-topics">
+
+            <% question.topics.each do |topic| %>
+              <span class="topic-badge">
+                <%= topic.name %>
+              </span>
+            <% end %>
+
+          </div>
+
+        <% end %>
+
+
+        <div class="question-statement">
+          <%= simple_format(question.statement) %>
+        </div>
+
+
+        <% last_attempt = question.attempts
+                                  .where(user: current_user)
+                                  .order(created_at: :desc)
+                                  .first %>
+
+
+        <% if params[:answered].to_i == question.id &&
+              last_attempt.present? %>
+
+          <% if question.annulled? %>
+
+            <div class="answer-feedback answer-feedback-warning">
+
+              <strong>Questão anulada</strong>
+
+              <span>
+                Esta questão foi marcada como anulada.
+              </span>
+
+            </div>
+
+
+          <% elsif last_attempt.correct? %>
+
+            <div class="answer-feedback answer-feedback-success">
+
+              <div class="feedback-title">
+                <span class="feedback-icon">✓</span>
+                Resposta correta!
+              </div>
+
+              <div class="feedback-detail">
+                Sua resposta:
+                <strong><%= last_attempt.answer %></strong>
+              </div>
+
+            </div>
+
+
+          <% else %>
+
+            <div class="answer-feedback answer-feedback-error">
+
+              <div class="feedback-title">
+                <span class="feedback-icon">✕</span>
+                Resposta incorreta
+              </div>
+
+              <div class="feedback-detail">
+                Sua resposta:
+                <strong><%= last_attempt.answer %></strong>
+
+                <span class="feedback-divider">•</span>
+
+                Gabarito:
+                <strong><%= question.correct_answer %></strong>
+              </div>
+
+            </div>
+
+          <% end %>
+
+
+        <% else %>
+
+          <%= form_with url: answer_question_path(question),
+                        method: :post,
+                        class: "answer-form" do |f| %>
+
+            <% request.query_parameters
+                      .except("answered")
+                      .each do |key, value| %>
+
+              <%= hidden_field_tag key, value %>
+
+            <% end %>
+
+
+            <div class="answer-options">
+
+              <% if question.true_false? %>
+
+                <label class="answer-option"
+                       for="answer_<%= question.id %>_C">
+
+                  <%= radio_button_tag :answer,
+                                      "C",
+                                      false,
+                                      id: "answer_#{question.id}_C" %>
+
+                  <span class="answer-letter">C</span>
+
+                  <span class="answer-text">
+                    Certo
+                  </span>
+
+                </label>
+
+
+                <label class="answer-option"
+                       for="answer_<%= question.id %>_E">
+
+                  <%= radio_button_tag :answer,
+                                      "E",
+                                      false,
+                                      id: "answer_#{question.id}_E" %>
+
+                  <span class="answer-letter">E</span>
+
+                  <span class="answer-text">
+                    Errado
+                  </span>
+
+                </label>
+
+
+              <% else %>
+
+                <% question.question_alternatives
+                           .order(:letter)
+                           .each do |alternative| %>
+
+                  <label class="answer-option"
+                         for="answer_<%= question.id %>_<%= alternative.letter %>">
+
+                    <%= radio_button_tag :answer,
+                                         alternative.letter,
+                                         false,
+                                         id: "answer_#{question.id}_#{alternative.letter}" %>
+
+                    <span class="answer-letter">
+                      <%= alternative.letter %>
+                    </span>
+
+                    <span class="answer-text">
+                      <%= alternative.text %>
+                    </span>
+
+                  </label>
+
+                <% end %>
+
+              <% end %>
+
+            </div>
+
+
+            <div class="question-actions">
+
+              <%= f.submit "Responder",
+                           class: "btn btn-primary" %>
+
+            </div>
+
+          <% end %>
+
+        <% end %>
+
+      </article>
+
+    <% end %>
+
+  </div>
+
+</section>

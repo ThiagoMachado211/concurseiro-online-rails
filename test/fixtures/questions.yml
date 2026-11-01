@@ -1,0 +1,25 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  exam: one
+  subject: one
+  number: 1
+  statement: MyText
+  modality: 1
+  difficulty: 1
+  correct_answer: MyString
+  status: 1
+  annulled: false
+  outdated: false
+
+two:
+  exam: two
+  subject: two
+  number: 1
+  statement: MyText
+  modality: 1
+  difficulty: 1
+  correct_answer: MyString
+  status: 1
+  annulled: false
+  outdated: false

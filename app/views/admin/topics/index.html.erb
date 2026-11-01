@@ -1,0 +1,59 @@
+<h1>Assuntos</h1>
+
+<p>
+  <%= link_to "Novo assunto", new_admin_topic_path %>
+</p>
+
+<p>
+  <strong><%= @topics.count %></strong>
+  assuntos cadastrados.
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Disciplina</th>
+      <th>Assunto</th>
+      <th>Assunto pai</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @topics.each do |topic| %>
+      <tr>
+        <td><%= topic.subject.name %></td>
+
+        <td>
+          <% if topic.parent.present? %>
+            ↳
+          <% end %>
+
+          <%= topic.name %>
+        </td>
+
+        <td>
+          <%= topic.parent&.name || "—" %>
+        </td>
+
+        <td>
+          <%= link_to "Editar",
+                      edit_admin_topic_path(topic) %>
+
+          <%= button_to "Excluir",
+                        admin_topic_path(topic),
+                        method: :delete,
+                        form: {
+                          data: {
+                            turbo_confirm: "Tem certeza?"
+                          }
+                        } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p>
+  <%= link_to "Voltar para Administração", admin_root_path %>
+</p>

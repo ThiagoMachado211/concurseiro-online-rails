@@ -1,0 +1,69 @@
+<h1><%= @question.public_id %></h1>
+
+<p>
+  <strong>Prova:</strong>
+  <%= @question.exam.name %>
+</p>
+
+<p>
+  <strong>Banca:</strong>
+  <%= @question.exam.exam_board.acronym.presence ||
+      @question.exam.exam_board.name %>
+</p>
+
+<p>
+  <strong>Disciplina:</strong>
+  <%= @question.subject.name %>
+</p>
+
+<p>
+  <strong>Assuntos:</strong>
+  <%= @question.topics.map(&:name).join(" • ") %>
+</p>
+
+<p>
+  <strong>Modalidade:</strong>
+  <%= @question.modality %>
+</p>
+
+<p>
+  <strong>Dificuldade:</strong>
+  <%= @question.difficulty %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @question.status %>
+</p>
+
+<hr>
+
+<h2>Enunciado</h2>
+
+<p>
+  <%= simple_format(@question.statement) %>
+</p>
+
+<% if @question.multiple_choice? %>
+
+  <h2>Alternativas</h2>
+
+  <% @question.question_alternatives.order(:letter).each do |alternative| %>
+    <p>
+      <strong><%= alternative.letter %>)</strong>
+      <%= alternative.text %>
+    </p>
+  <% end %>
+
+<% end %>
+
+<p>
+  <strong>Gabarito:</strong>
+  <%= @question.correct_answer %>
+</p>
+
+<hr>
+
+<%= link_to "Editar", edit_admin_question_path(@question) %>
+|
+<%= link_to "Voltar", admin_questions_path %>

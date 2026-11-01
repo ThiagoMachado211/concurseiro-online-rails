@@ -1,0 +1,83 @@
+<%= form_with model: [:admin, exam] do |f| %>
+
+  <% if exam.errors.any? %>
+    <div>
+      <h2>Não foi possível salvar:</h2>
+
+      <ul>
+        <% exam.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <p>
+    <%= f.label :name, "Nome da prova" %><br>
+    <%= f.text_field :name %>
+  </p>
+
+  <p>
+    <%= f.label :year, "Ano" %><br>
+    <%= f.number_field :year,
+                       min: 1900,
+                       max: Date.current.year + 5 %>
+  </p>
+
+  <p>
+    <%= f.label :exam_board_id, "Banca" %><br>
+
+    <%= f.collection_select(
+          :exam_board_id,
+          @exam_boards,
+          :id,
+          :name,
+          { prompt: "Selecione uma banca" }
+        ) %>
+  </p>
+
+  <p>
+    <%= f.label :institution_id, "Instituição" %><br>
+
+    <%= f.collection_select(
+          :institution_id,
+          @institutions,
+          :id,
+          :name,
+          { prompt: "Selecione uma instituição" }
+        ) %>
+  </p>
+
+  <p>
+    <%= f.label :position_id, "Cargo" %><br>
+
+    <%= f.collection_select(
+          :position_id,
+          @positions,
+          :id,
+          :name,
+          { prompt: "Selecione um cargo" }
+        ) %>
+  </p>
+
+  <p>
+    <%= f.label :education_level, "Nível de escolaridade" %><br>
+
+    <%= f.select(
+          :education_level,
+          [
+            ["Fundamental", "fundamental"],
+            ["Médio", "medium"],
+            ["Superior", "higher"]
+          ],
+          { include_blank: "Selecione" }
+        ) %>
+  </p>
+
+  <p>
+    <%= f.submit exam.persisted? ?
+          "Salvar alterações" :
+          "Cadastrar prova" %>
+  </p>
+
+<% end %>

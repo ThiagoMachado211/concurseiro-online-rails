@@ -1,0 +1,312 @@
+<section class="admin-page">
+
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Administração</h1>
+
+      <p class="page-description">
+        Gerencie o conteúdo e acompanhe os principais números
+        do Concurseiro Online.
+      </p>
+    </div>
+  </header>
+
+
+  <!-- RESUMO -->
+  <section class="admin-summary">
+
+    <div class="admin-metric-card card">
+      <span class="admin-metric-label">Usuários</span>
+
+      <strong class="admin-metric-value">
+        <%= @users_count %>
+      </strong>
+
+      <span class="admin-metric-description">
+        contas cadastradas
+      </span>
+    </div>
+
+
+    <div class="admin-metric-card card">
+      <span class="admin-metric-label">Questões</span>
+
+      <strong class="admin-metric-value">
+        <%= @questions_count %>
+      </strong>
+
+      <span class="admin-metric-description">
+        questões cadastradas
+      </span>
+    </div>
+
+
+    <div class="admin-metric-card admin-metric-highlight card">
+      <span class="admin-metric-label">Publicadas</span>
+
+      <strong class="admin-metric-value">
+        <%= @published_questions_count %>
+      </strong>
+
+      <span class="admin-metric-description">
+        disponíveis aos alunos
+      </span>
+    </div>
+
+
+    <div class="admin-metric-card card">
+      <span class="admin-metric-label">Provas</span>
+
+      <strong class="admin-metric-value">
+        <%= @exams_count %>
+      </strong>
+
+      <span class="admin-metric-description">
+        provas cadastradas
+      </span>
+    </div>
+
+
+    <div class="admin-metric-card admin-metric-success card">
+      <span class="admin-metric-label">Tentativas</span>
+
+      <strong class="admin-metric-value">
+        <%= @attempts_count %>
+      </strong>
+
+      <span class="admin-metric-description">
+        respostas registradas
+      </span>
+    </div>
+
+  </section>
+
+
+  <!-- GERENCIAMENTO PRINCIPAL -->
+  <section class="dashboard-section">
+
+    <div class="section-heading">
+      <div>
+        <h2>Gerenciamento de conteúdo</h2>
+
+        <p>
+          Cadastre e organize o conteúdo disponível na plataforma.
+        </p>
+      </div>
+    </div>
+
+
+    <div class="admin-management-grid">
+
+      <!-- QUESTÕES -->
+      <%= link_to admin_questions_path,
+                  class: "admin-management-card card" do %>
+
+        <div class="admin-management-header">
+
+          <div class="admin-management-icon">
+            Q
+          </div>
+
+          <span class="admin-management-count">
+            <%= @questions_count %>
+          </span>
+
+        </div>
+
+        <div class="admin-management-content">
+
+          <h3>Questões</h3>
+
+          <p>
+            Cadastre, revise, edite e publique questões
+            para os alunos.
+          </p>
+
+        </div>
+
+        <span class="admin-management-link">
+          Gerenciar questões
+          <span>→</span>
+        </span>
+
+      <% end %>
+
+
+      <!-- PROVAS -->
+      <%= link_to admin_exams_path,
+                  class: "admin-management-card card" do %>
+
+        <div class="admin-management-header">
+
+          <div class="admin-management-icon">
+            P
+          </div>
+
+          <span class="admin-management-count">
+            <%= @exams_count %>
+          </span>
+
+        </div>
+
+        <div class="admin-management-content">
+
+          <h3>Provas</h3>
+
+          <p>
+            Organize provas por banca, instituição,
+            cargo e ano.
+          </p>
+
+        </div>
+
+        <span class="admin-management-link">
+          Gerenciar provas
+          <span>→</span>
+        </span>
+
+      <% end %>
+
+
+      <!-- DISCIPLINAS -->
+      <%= link_to admin_subjects_path,
+                  class: "admin-management-card card" do %>
+
+        <div class="admin-management-header">
+
+          <div class="admin-management-icon">
+            D
+          </div>
+
+          <span class="admin-management-count">
+            <%= @subjects_count %>
+          </span>
+
+        </div>
+
+        <div class="admin-management-content">
+
+          <h3>Disciplinas</h3>
+
+          <p>
+            Organize as áreas de conhecimento utilizadas
+            na classificação das questões.
+          </p>
+
+        </div>
+
+        <span class="admin-management-link">
+          Gerenciar disciplinas
+          <span>→</span>
+        </span>
+
+      <% end %>
+
+
+      <!-- ASSUNTOS -->
+      <%= link_to admin_topics_path,
+                  class: "admin-management-card card" do %>
+
+        <div class="admin-management-header">
+
+          <div class="admin-management-icon">
+            A
+          </div>
+
+          <span class="admin-management-count">
+            <%= @topics_count %>
+          </span>
+
+        </div>
+
+        <div class="admin-management-content">
+
+          <h3>Assuntos</h3>
+
+          <p>
+            Estruture assuntos e subassuntos utilizados
+            nos filtros das questões.
+          </p>
+
+        </div>
+
+        <span class="admin-management-link">
+          Gerenciar assuntos
+          <span>→</span>
+        </span>
+
+      <% end %>
+
+    </div>
+
+  </section>
+
+
+  <!-- CADASTROS AUXILIARES -->
+  <section class="dashboard-section">
+
+    <div class="section-heading">
+      <div>
+        <h2>Cadastros auxiliares</h2>
+
+        <p>
+          Gerencie as informações utilizadas na classificação das provas.
+        </p>
+      </div>
+    </div>
+
+
+    <div class="admin-secondary-grid">
+
+      <%= link_to admin_exam_boards_path,
+                  class: "admin-secondary-card card" do %>
+
+        <div>
+          <strong>Bancas</strong>
+
+          <span>
+            Organizadoras das provas
+          </span>
+        </div>
+
+        <span class="admin-secondary-arrow">→</span>
+
+      <% end %>
+
+
+      <%= link_to admin_institutions_path,
+                  class: "admin-secondary-card card" do %>
+
+        <div>
+          <strong>Instituições</strong>
+
+          <span>
+            Órgãos e instituições
+          </span>
+        </div>
+
+        <span class="admin-secondary-arrow">→</span>
+
+      <% end %>
+
+
+      <%= link_to admin_positions_path,
+                  class: "admin-secondary-card card" do %>
+
+        <div>
+          <strong>Cargos</strong>
+
+          <span>
+            Cargos vinculados às provas
+          </span>
+        </div>
+
+        <span class="admin-secondary-arrow">→</span>
+
+      <% end %>
+
+    </div>
+
+  </section>
+
+</section>

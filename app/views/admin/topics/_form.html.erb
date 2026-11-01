@@ -1,0 +1,58 @@
+<%= form_with model: [:admin, topic] do |f| %>
+
+  <% if topic.errors.any? %>
+    <div>
+      <h2>Não foi possível salvar:</h2>
+
+      <ul>
+        <% topic.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <p>
+    <%= f.label :subject_id, "Disciplina" %><br>
+
+    <%= f.collection_select(
+          :subject_id,
+          @subjects,
+          :id,
+          :name,
+          { prompt: "Selecione uma disciplina" }
+        ) %>
+  </p>
+
+  <p>
+    <%= f.label :name, "Nome do assunto" %><br>
+    <%= f.text_field :name %>
+  </p>
+
+  <p>
+    <%= f.label :parent_id, "Assunto pai" %><br>
+
+    <%= f.select(
+          :parent_id,
+          @possible_parents.map {
+            |parent|
+            [
+              "#{parent.subject.name} — #{parent.name}",
+              parent.id
+            ]
+          },
+          { include_blank: "Nenhum — assunto principal" }
+        ) %>
+  </p>
+
+  <p>
+    <small>
+      Use "Assunto pai" somente quando este for um subassunto.
+    </small>
+  </p>
+
+  <%= f.submit topic.persisted? ?
+        "Salvar alterações" :
+        "Cadastrar assunto" %>
+
+<% end %>

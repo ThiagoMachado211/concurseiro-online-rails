@@ -1,0 +1,198 @@
+<section class="admin-resource-page">
+
+  <header class="resource-header">
+
+    <div>
+      <h1 class="page-title">Questões</h1>
+
+      <p class="page-description">
+        Gerencie as questões cadastradas na plataforma.
+      </p>
+    </div>
+
+    <%= link_to "+ Nova questão",
+                new_admin_question_path,
+                class: "btn btn-primary" %>
+
+  </header>
+
+
+  <section class="resource-content card">
+
+    <div class="resource-toolbar">
+
+      <div>
+        <strong class="resource-count">
+          <%= @questions.count %>
+        </strong>
+
+        <span class="resource-count-label">
+          <%= @questions.count == 1 ?
+                "questão cadastrada" :
+                "questões cadastradas" %>
+        </span>
+      </div>
+
+    </div>
+
+
+    <% if @questions.any? %>
+
+      <div class="admin-table-wrapper">
+
+        <table class="admin-table">
+
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Disciplina</th>
+              <th>Banca</th>
+              <th>Ano</th>
+              <th>Status</th>
+              <th class="table-actions-heading">Ações</th>
+            </tr>
+          </thead>
+
+
+          <tbody>
+
+            <% @questions.each do |question| %>
+
+              <tr>
+
+                <td>
+                  <%= link_to question.public_id,
+                              admin_question_path(question),
+                              class: "question-table-id" %>
+                </td>
+
+
+                <td>
+                  <strong class="table-primary-text">
+                    <%= question.subject.name %>
+                  </strong>
+                </td>
+
+
+                <td>
+                  <%= question.exam.exam_board.acronym.presence ||
+                      question.exam.exam_board.name %>
+                </td>
+
+
+                <td>
+                  <%= question.exam.year %>
+                </td>
+
+
+                <td>
+
+                  <% if question.status == "published" %>
+
+                    <span class="status-badge status-published">
+                      Publicada
+                    </span>
+
+                  <% elsif question.status == "pending_review" %>
+
+                    <span class="status-badge status-pending">
+                      Em revisão
+                    </span>
+
+                  <% elsif question.status == "draft" %>
+
+                    <span class="status-badge status-draft">
+                      Rascunho
+                    </span>
+
+                  <% elsif question.status == "archived" %>
+
+                    <span class="status-badge status-archived">
+                      Arquivada
+                    </span>
+
+                  <% else %>
+
+                    <span class="status-badge">
+                      <%= question.status.humanize %>
+                    </span>
+
+                  <% end %>
+
+                </td>
+
+
+                <td>
+
+                  <div class="table-actions">
+
+                    <%= link_to "Ver",
+                                admin_question_path(question),
+                                class: "table-action-link" %>
+
+
+                    <%= link_to "Editar",
+                                edit_admin_question_path(question),
+                                class: "table-action-link" %>
+
+
+                    <%= button_to "Excluir",
+                                  admin_question_path(question),
+                                  method: :delete,
+                                  class: "table-action-delete",
+                                  form_class: "inline-delete-form",
+                                  form: {
+                                    data: {
+                                      turbo_confirm:
+                                        "Tem certeza que deseja excluir esta questão?"
+                                    }
+                                  } %>
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+            <% end %>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+    <% else %>
+
+      <div class="empty-state">
+
+        <div class="empty-state-icon">Q</div>
+
+        <h3>Nenhuma questão cadastrada</h3>
+
+        <p>
+          Cadastre a primeira questão para começar
+          a montar o banco da plataforma.
+        </p>
+
+        <%= link_to "Cadastrar questão",
+                    new_admin_question_path,
+                    class: "btn btn-primary" %>
+
+      </div>
+
+    <% end %>
+
+  </section>
+
+
+  <div class="resource-footer">
+
+    <%= link_to "← Voltar para Administração",
+                admin_root_path,
+                class: "back-link" %>
+
+  </div>
+
+</section>

@@ -1,0 +1,33 @@
+<%= form_with model: [:admin, resource] do |f| %>
+
+  <% if resource.errors.any? %>
+    <div>
+      <h2>Não foi possível salvar:</h2>
+
+      <ul>
+        <% resource.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <p>
+    <%= f.label :name, "Nome" %><br>
+    <%= f.text_field :name %>
+  </p>
+
+  <% if resource.respond_to?(:acronym) %>
+    <p>
+      <%= f.label :acronym, "Sigla" %><br>
+      <%= f.text_field :acronym %>
+    </p>
+  <% end %>
+
+  <p>
+    <%= f.submit resource.persisted? ?
+          "Salvar alterações" :
+          "Cadastrar" %>
+  </p>
+
+<% end %>

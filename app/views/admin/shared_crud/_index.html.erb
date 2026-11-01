@@ -1,0 +1,54 @@
+<h1><%= title %></h1>
+
+<p>
+  <%= link_to "Novo #{singular.downcase}", new_path %>
+</p>
+
+<p>
+  <strong><%= resources.count %></strong>
+  registros cadastrados.
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nome</th>
+
+      <% if show_acronym %>
+        <th>Sigla</th>
+      <% end %>
+
+      <th>Ações</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |resource| %>
+      <tr>
+        <td><%= resource.name %></td>
+
+        <% if show_acronym %>
+          <td><%= resource.acronym %></td>
+        <% end %>
+
+        <td>
+          <%= link_to "Editar",
+                      polymorphic_path([:edit, :admin, resource]) %>
+
+          <%= button_to "Excluir",
+                        polymorphic_path([:admin, resource]),
+                        method: :delete,
+                        form: {
+                          data: {
+                            turbo_confirm: "Tem certeza?"
+                          }
+                        } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p>
+  <%= link_to "Voltar para Administração", admin_root_path %>
+</p>
